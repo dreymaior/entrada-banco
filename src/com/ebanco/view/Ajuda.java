@@ -32,6 +32,7 @@ public class Ajuda {
 
     public void mostraFrame(){
         frameAjuda.setSize(400,150);
+        frameAjuda.setLocationRelativeTo(null);
         frameAjuda.setVisible(true);
     }
 
