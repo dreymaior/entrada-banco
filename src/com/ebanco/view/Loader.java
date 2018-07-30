@@ -1,20 +1,25 @@
 package com.ebanco.view;
 
 import com.ebanco.controller.CarregadorLog;
+import com.ebanco.data.Log;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class Loader {
 
     public static final int LABEL_WIDTH = 580;
+    public static final int WINDOW_WIDTH = 700;
+    public static final int WINDOW_HEIGHT = 600;
 
     private JFrame frameInicial;
     private JPanel painelInicial;
     private JPanel painelSuperior;
     private JPanel painelInferior;
+    private JTable tabela;
     private CarregadorLog carregadorLog;
 
     public Loader(){
@@ -25,6 +30,7 @@ public class Loader {
 
     public void inicializaFrame(){
         frameInicial = new JFrame();
+        frameInicial.setTitle("Entradas no banco");
         frameInicial.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
@@ -44,7 +50,7 @@ public class Loader {
 
     public void mostraFrame(){
         frameInicial.pack();
-        frameInicial.setSize(600,200);
+        frameInicial.setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
         frameInicial.setLocationRelativeTo(null);
         frameInicial.setVisible(true);
     }
@@ -75,9 +81,11 @@ public class Loader {
             @Override
             public void actionPerformed(ActionEvent e) {
                 carregadorLog = new CarregadorLog();
-                carregadorLog.abrirArquivo();
+                List<Log> lista = carregadorLog.abrirArquivo();
                 painelSuperior.removeAll();
-                criarLabel();
+                // tabela mostra os dias registrados e quantas pessoas entraram no banco
+                // dentro do horário de funcionamento nesse dia
+                desenharTabela(lista);
                 painelSuperior.revalidate();
                 painelSuperior.repaint();
             }
@@ -94,6 +102,21 @@ public class Loader {
             }
         });
         painelInferior.add(botaoAjuda);
+    }
+
+    public void criarTabela(){
+        tabela = new JTable();
+
+        JScrollPane scroll = new JScrollPane();
+        scroll.getViewport().add(tabela);
+
+        painelSuperior.add(scroll);
+    }
+
+    public void desenharTabela(List<Log> lista){
+        criarTabela();
+        LogTableModel ltm = new LogTableModel(lista);
+        tabela.setModel(ltm);
     }
 
 }
